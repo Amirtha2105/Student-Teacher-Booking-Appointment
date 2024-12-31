@@ -60,23 +60,3 @@ document.getElementById('book-appointment-button').addEventListener('click', asy
         document.getElementById('booking-message').innerText = `Error: ${error.message}`;
     }
 });
-    
-function sendEmail() {
-    const userEmail = document.getElementById('emailInput').value;
-    
-    // Send userEmail to backend for processing (using fetch or AJAX)
-    fetch('/send-email', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: userEmail }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message); // Display success/failure message
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
