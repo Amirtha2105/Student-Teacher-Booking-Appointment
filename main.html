@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main page</title>
+</head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #4618ff;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #fff;
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    #container {
+        text-align: center;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    #buttons {
+        margin-top: 20px;
+    }
+    button {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #0056b3;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    input {
+        padding: 20px;
+        border-radius: 8px;
+    }
+    button:hover {
+        background-color: #004090;
+    }
+    a {
+        text-decoration: dotted;
+        color: #004090;
+        font-weight: bold;
+
+    }
+    footer {
+        position: absolute;
+        bottom: 10px;
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+<body>
+    <h1>Portal for<br>Student-Teacher Booking Appointment</h1>
+    <div id="container">
+        <!--Register if new user -->
+        <div id="register">
+            <h2>Register</h2>
+            <input type="email" id="reg-email" placeholder="Enter Email" required>
+            <input type="password" id="reg-password" placeholder="Enter Password" required><br>
+            <button id="reg-button">Register</button>
+
+            <p>Existing user? <a href="#" id="d-login">Login</a></p>
+            <p id="reg-message"></p>
+        </div>
+
+        <!--Login for existing user -->
+        <div id="login">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Enter Email" required>
+            <input type="password" id="login-password" placeholder="Enter Password" required><br>
+            <button id="login-button">Login</button>
+
+            <p>New user? <a href="#" id="d-register">Register</a></p>
+            <p id="login-message"></p>
+        </div>
+    </div>
+    <script type="module">
+        let a = document.getElementById('login-email')
+        // Import the Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNH9yWXJW9JlGNtoAg7_D8gJfEgVex8VU",
+            authDomain: "stba-91549.firebaseapp.com",
+            projectId: "stba-91549",
+            storageBucket: "stba-91549.firebasestorage.app",
+            messagingSenderId: "435033725584",
+            appId: "1:435033725584:web:81d8f0e1a952d420cb5615",
+            measurementId: "G-P34MPZM3YN"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Toggle between Register and Login
+        document.getElementById('d-login').addEventListener('click', () => {
+            document.getElementById('register').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+        });
+
+        document.getElementById('d-register').addEventListener('click', () => {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('register').style.display = 'block';
+        });
+
+        // Register
+        document.getElementById('reg-button').addEventListener('click', () => {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User registered:', user);
+                    document.getElementById('reg-message').innerText = 'Registration successful!';
+                })
+                .catch((error) => {
+                    console.error('Error:', error.code, error.message);
+                    document.getElementById('reg-message').innerText = `Error: ${error.message}`;
+                });
+        });
+
+        // Login
+        document.getElementById('login-button').addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User logged in:', user);
+                    document.getElementById('login-message').innerText = 'Login successful!';
+                    window.location.href = "app-book.html"; // Leads to appointment booking section
+                })
+                .catch((error) => {
+                    console.error('Error:', error.code, error.message);
+                    document.getElementById('login-message').innerText = `Error: ${error.message}`;
+                });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const registerForm = document.getElementById("register");
+            const loginForm = document.getElementById("login");
+            const showLogin = document.getElementById("d-login");
+            const showRegister = document.getElementById("d-register");
+
+            // Show the register form initially
+            registerForm.classList.add("active");
+
+            showLogin.addEventListener("click", (e) => {
+                e.preventDefault();
+                registerForm.classList.remove("active");
+                loginForm.classList.add("active");
+            });
+
+            showRegister.addEventListener("click", (e) => {
+                e.preventDefault();
+                loginForm.classList.remove("active");
+                registerForm.classList.add("active");
+            });
+        });
+    </script>
+</body>
+</html>
